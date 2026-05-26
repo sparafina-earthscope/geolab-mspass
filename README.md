@@ -1,18 +1,18 @@
 # **Building Custom GeoLab Images**
 
-GeoLab environments run inside **Docker containers** — self-contained packages that bundle an operating system, software libraries, and Python packages together. This guide walks you through customizing the MSPASS GeoLab image by editing plain-text configuration files, then building the image locally and deploying it in a public repository such as Docker Hub.
+GeoLab environments run inside **Docker containers** — self-contained packages that bundle an operating system, software libraries, and Python packages together. This guide walks you through customizing the MSPASS GeoLab image by editing the Dockerfile and environment.yml file, then building the image locally, and deploying it in a public repository such as Docker Hub.
 
 ## **Installing Docker Desktop**
 
-You will need to install Docker Desktop to build and run images on your computer or make them available. If you are new to Docker, images, and containers, follow the [instructions](https://docs.docker.com/get-started/introduction/) to install Desktop for your operating system. Work through the [modules]([https://docs.docker.com/get-started/introduction/\#modules](https://docs.docker.com/get-started/introduction/#modules)) to learn how to build, run, and publish images.
+You will need to install Docker Desktop to build and run images on your computer or make them available on image repositories. If you are new to Docker, images, and containers, follow the [instructions](https://docs.docker.com/get-started/introduction/) to install Desktop for your operating system. Work through the [modules]([https://docs.docker.com/get-started/introduction/\#modules](https://docs.docker.com/get-started/introduction/#modules)) to learn how to build, run, and publish images.
 
 After installing Docker Desktop, log into Docker. This enables saving or pushing an image to Docker Hub, Docker’s image repository.
 
-## **Installing git**
+## **Installing Git**
 
 Git is used to manage code. You will need git to make a copy of the GeoLab repository which contains the template for building custom images. Follow the [instructions]([https://github.com/git-guides/install-git](https://github.com/git-guides/install-git)) to install git. If you are unfamiliar with git, you can work through a [tutorial]([https://github.com/EarthScope/GeoLab-learning-hub/blob/main/tutorials/fundamentals/1\_git\_intro.ipynb](https://github.com/EarthScope/GeoLab-learning-hub/blob/main/tutorials/fundamentals/1_git_intro.ipynb)).
 
-### **Cloning the repository**
+### **Cloning the Repository**
 
 Make a copy of this repository by cloning it using git.
 
@@ -21,7 +21,7 @@ cd ~
 git clone https://github.com/sparafina-earthscope/geolab-mspass.git  
 ```
 
-## **Configuring an image**
+## **Configuring an Image**
 
 A Docker image is a snapshot of a complete computing environment. When GeoLab launches, it starts a container from that image. The Dockerfile specifies how the image is built. Software and Python packages are installed from either the Dockerfile or the environment.yml file.
 
@@ -40,7 +40,7 @@ Conda manages Python (and non-Python) packages within isolated environments. Edi
 
 **Example:** Adding ObsPy Plus (`obsplus`) to the Geophysics section:
 
-```
+```yml
 channels:
  - conda-forge
 dependencies:
@@ -55,13 +55,15 @@ dependencies:
 
 Some packages are only available on PyPI (Python's package index) and must be installed with `pip`. Add them to requirements.txt, one per line. You can pin a specific version with == to ensure reproducibility.
 
-**Example:** Adding `gnss-lib-py`:
+**Example:** Adding `earthscope-cli`:
 
-```shell
+```yml
+...
 # --- EarthScope ---
-earthscope-sdk==1.4.1
-earthscope-cli==1.2.0
-gnss-lib-py
+- pip:
+   earthscope-sdk==1.4.1
+   earthscope-cli==1.2.0
+...
 ```
 
 ## **Building and Pushing the Image**
@@ -90,13 +92,15 @@ docker push username/my_project:0.1.0
 
 If you use AWS ECR, follow these [instructions](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html).
 
-## **Running Your Image in GeoLab**
+## **Running the Image in GeoLab**
 
 1. Open GeoLab.  
 2. Choose **Environment → Other**.  
-   ![](./images/choose_environment.png)  
-3. Enter the full image name from your registry, e.g.: [**docker.io/username/shortcourse:0.1.0**](http://docker.io/username/shortcourse:0.1.0).  
-   ![](./images/custom_image.png)  
-4. Select **Start**.
+   ![](./images/choose_environment.png)<p><p>
+3. Enter the full image name from your registry, e.g.: `**docker.io/username/my_project:0.1.0**`. The full image name includes the domain name of the registry, e.g., `docker.io`.
+   ![](./images/custom_image.png)<p><p>
+4. Choose the **Resource Allocation**.<p>
+   ![](./images/resource_allocation.png)<p><p>
+5. Select **Start**.
 
 GeoLab will pull and launch your custom environment. The first launch may take a minute while the image downloads. 
