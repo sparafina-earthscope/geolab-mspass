@@ -38,16 +38,13 @@ RUN apt-get install nano \
 
 Conda manages Python (and non-Python) packages within isolated environments. Edit `environment.yml` to add packages by name under the appropriate section. Always use the `conda-forge` channel for the broadest package availability unless otherwise specified in the package’s installation instructions
 
-**Example:** Adding ObsPy Plus (`obsplus`) to the Geophysics section:
+**Example:** Adding ObsPy Plus (`obsplus`):
 
 ```yml
 channels:
  - conda-forge
 dependencies:
  ...
- # ── Geophysics ──────────────────────────────────────
- - dascore
- - gmt
  - obspy
  - obsplus
  ...
@@ -59,7 +56,6 @@ Some packages are only available on PyPI (Python's package index) and must be in
 
 ```yml
 ...
-# --- EarthScope ---
 - pip:
    earthscope-sdk==1.4.1
    earthscope-cli==1.2.0
